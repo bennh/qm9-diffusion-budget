@@ -1,45 +1,40 @@
 # An Empirical Study of CDGS-Based Molecular Generation on QM9
 
-A course project repository for studying **CDGS-based molecular graph generation** on **QM9** under different diffusion sampling step budgets, with additional **lightweight chemistry-aware post-processing**.
-
-## Highlights
-
-- Fixed pretrained **CDGS** checkpoint on **QM9**
-- Controlled comparison across `T ∈ {25, 50, 100, 200}`
-- Two evaluation settings:
-  - **none**: raw generated outputs
-  - **filterplus**: raw outputs + lightweight chemistry-aware filtering
-- Main metrics:
-  - `FCD/Test`
-  - `Novelty`
-  - `Unique ratio`
-  - `Sampling runtime`
-- Final report built from saved `.pkl`, `.log`, and summary files
+This repository contains the code and experiment assets for a course project on **molecular graph generation with CDGS** on the **QM9** dataset.  
+Using a fixed pretrained CDGS checkpoint, we study how different **diffusion sampling step budgets** affect generation quality, diversity, reliability, and runtime, and we further evaluate a lightweight **chemistry-aware post-processing** strategy.
 
 ---
 
-## Project Goal
+## Overview
 
-This project investigates how the number of diffusion sampling steps affects molecular generation behavior in a fixed CDGS setup on QM9.
+Diffusion-based molecular graph generators often face a trade-off between **sampling efficiency** and **sample quality**.  
+In this project, we keep the **model, dataset, and checkpoint fixed**, and vary only the **sampling budget** to conduct a controlled empirical study.
 
-We focus on:
+We compare:
 
-- how generation quality changes with `T`
-- how runtime changes with `T`
-- how novelty and uniqueness behave across different step budgets
-- whether simple post-processing can improve final output quality
+- different sampling budgets: `T ∈ {25, 50, 100, 200}`
+- two evaluation settings:
+  - `none`: raw generated outputs
+  - `filterplus`: raw outputs followed by lightweight chemistry-aware filtering
+
+The goal is to understand how fewer or more sampling steps influence:
+
+- molecular validity and reliability
+- distributional quality
+- diversity and novelty
+- sampling runtime
 
 ---
 
-## Experimental Settings
+## Project Setting
 
 ### Model and Dataset
 
-- **Model**: CDGS
-- **Dataset**: QM9
-- **Checkpoint**: `ckpt = 200`
+- **Model:** CDGS
+- **Dataset:** QM9
+- **Checkpoint:** pretrained `checkpoint_200`
 
-### Main Sampling Budgets
+### Sampling Budgets
 
 - `T = 25`
 - `T = 50`
@@ -54,49 +49,57 @@ We focus on:
 
 ---
 
-## Experiment Variants
+## Evaluation Modes
 
-### 1. none
+### 1. `none`
 
-Raw generated molecules are evaluated directly.
+Generated molecules are evaluated directly without additional filtering.
 
-### 2. filterplus
+### 2. `filterplus`
 
-Raw generated molecules are passed through lightweight chemistry-aware filtering before evaluation.
+Generated molecules are post-processed with lightweight chemistry-aware filtering before evaluation.
 
-The final filter includes:
+The `filterplus` pipeline includes:
 
-- sanitization
-- atom-set check
+- RDKit sanitization
+- atom-type check
 - connectivity check
-- size limit check
-- valence check
+- size constraint
+- simple valence check
 
 ---
 
-## Repository Layout
+## Evaluation Metrics
+
+Our analysis focuses on the following metrics:
+
+- **Validity**
+- **FCD/Test**
+- **Novelty**
+- **Unique ratio**
+- **Sampling runtime**
+
+Depending on the experiment setting, we also analyze retention statistics and failure cases after filtering.
+
+---
+
+## Repository Structure
 
 ```text
 .
-├── configs/
-│   └── vp_qm9_cdgs.py
-├── scripts/
-│   └── filter_only_eval.py
-├── exp/
-│   └── vpsde_qm9_cdgs/
-│       ├── checkpoints/
-│       ├── eval_t25_none_5k/
-│       ├── eval_t50_none_5k/
-│       ├── eval_t100_none_5k/
-│       ├── eval_t200_none_5k/
-│       ├── eval_t25_filter_5k/
-│       ├── eval_t50_filter_5k/
-│       ├── eval_t100_filter_5k/
-│       └── eval_t200_filter_5k/
-├── eval_t25_none_5k.log
-├── eval_t50_none_5k.log
-├── eval_t100_none_5k.log
-├── eval_t200_none_5k.log
-├── main.py
-├── run_lib.py
+├── configs/                 # experiment configuration files
+├── evaluation/              # evaluation utilities and metric code
+├── models/                  # model components
+├── scripts/                 # experiment and post-processing scripts
+├── figures/                 # generated figures for the report
+├── main.py                  # main entry point
+├── run_lib.py               # training / evaluation pipeline
+├── sampling.py              # sampling procedures
+├── dpm_solvers.py           # diffusion solver implementations
+├── datasets.py              # dataset utilities
+├── losses.py                # loss definitions
+├── sde_lib.py               # SDE utilities
+├── utils.py                 # helper functions
+├── visualize.py             # visualization utilities
+├── results_summary.ipynb    # result aggregation and analysis
 └── README.md
