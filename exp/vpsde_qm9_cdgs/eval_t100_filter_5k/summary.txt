@@ -1,0 +1,15 @@
+input_count: 5000
+filtered_count: 4158
+unique_filtered_count: 3512
+dropped_count: 842
+retention_ratio: 0.8316
+unique_ratio: 0.8446368446368446
+valid: 1.0
+unique: 1.0
+FCD/Test: 5.736158404671187
+Novelty_self: 0.943621867881549
+invalid_smiles: 0
+atom_set_fail: 0
+fragment_fail: 0
+size_fail: 0
+valence_fail: 842
