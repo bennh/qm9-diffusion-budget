@@ -86,7 +86,6 @@ Depending on the experiment setting, we also analyze retention statistics and fa
 ## Repository Structure
 
 ```text
-.
 ├── configs/                 # experiment configuration files
 ├── evaluation/              # evaluation utilities and metric code
 ├── models/                  # model components
